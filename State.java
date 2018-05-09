@@ -1,6 +1,6 @@
 public enum State {
-	SPACE,
-	WALL, 
-	BOMB, 
-	NONE, 
+	SPACE,		// 空マス
+	WALL, 		// 壁
+	BOMB, 		// 爆弾
+	OPEN, 		// 開けたマス
 }

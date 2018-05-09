@@ -1,27 +1,52 @@
 import java.util.Random;
 
 public class Board {
-	private int stageWidth = 5;
-	private int stageHeight = 5;
-	private int windowWidth = stageWidth+2;
-	private int windowHeight = stageHeight+2;
+	private int stageWidth = 5;						// 盤面の横幅
+	private int stageHeight = 5;					// 盤面の縦幅
+	private int windowWidth = stageWidth+2;			// 画面の横幅
+	private int windowHeight = stageHeight+2;		// 画面の縦幅
 
-	private State[][] stage;
+	private State[][] stage;						// ステージ
 
+	/**
+	 * Boardクラスのコンストラクタです。
+	 * 盤面の状態を初期化し、新しいステージを構築します。
+	 */
 	public Board() {
 		init();
 	}
 
-	public Board(int x, int y) {
-		stageWidth = x;
-		stageHeight = y;
+	/**
+	 * Boardクラスのコンストラクタです。
+	 * 盤面の状態を初期化し、新しいステージを構築します。
+	 * また、引数に指定した整数型の数値で画面の大きさを設定します。
+	 * @param width 画面の横幅
+	 * @param height 画面の縦幅
+	 */
+	public Board(int width, int height) {
+		stageWidth = height;
+		stageHeight = width;
 		//TODO
 	}
 
+	/*
+	 * ステージの初期化を行うメソッドです。
+	 * 下記、図のように初期化が行われます。
+	 * 壁 - ■, スペース - □, 爆弾 - ※
+	 * 例:) 盤面のサイズが5x5の場合
+	 * ■■■■■■■
+	 * ■□□□□※■
+	 * ■□※□※□■
+	 * ■□□□□□■
+	 * ■□※□□□■
+	 * ■□※※□□■
+	 * ■■■■■■■
+	 * 爆弾はランダムで配置されます。
+	 */
 	private void init() {
 		stage = new State[windowWidth][windowHeight];
 
-		// make wall
+		// 壁を生成
 		for (int y = 0; y < windowHeight; ++y) {
 			for (int x = 0; x < windowWidth; ++x) {
 				stage[0][x] = State.WALL;
@@ -31,33 +56,35 @@ public class Board {
 			}
 		}
 
-		// make space
+		// 空マスを生成
 		for (int y = 0; y < stageHeight; ++y) {
 			for (int x = 0; x < stageWidth; ++x) {
 				stage[y+1][x+1] = State.SPACE;
 			}
 		}
 
-		// put bomb
+		// 爆弾を配置
 		putBomb();
 	}
 
-	// stage draw
+	/**
+	 * ステージを描画させるメソッドです。
+	 */
 	public void draw() {
 		for (int y = 0; y < windowHeight; ++y) {
 			for (int x = 0; x < windowWidth; ++x) {
 				switch (stage[y][x]) {
 				case SPACE:
-					print(" ");
+					print("□");
 					break;
 				case WALL:
-					print("#");
+					print("■");
 					break;
 				case BOMB:
-					print("*");
+					print("※");
 					break;
 				default:
-					print("e");
+					print("er");
 					break;
 				}
 			}
@@ -65,7 +92,9 @@ public class Board {
 		}
 	}
 
-	// random put bomb to stage
+	/*
+	 * 盤面上にランダムで爆弾を配置するメソッドです。
+	 */
 	private void putBomb() {
 		Random r = new Random();
 		for (int y = 0; y < stageHeight; ++y) {
@@ -76,7 +105,9 @@ public class Board {
 		}
 	}
 
-	// accessor
+	/* ====================
+	 * 以下、アクセッサ
+	 * ====================*/
 	public int getStageWidth() {
 		return stageWidth;
 	}
@@ -93,7 +124,9 @@ public class Board {
 		return windowHeight;
 	}
 
-	// wrapper
+	/* ====================
+	 * 以下、ラッパーメソッド
+	 * ====================*/
 	private void print(Object obj) {
 		System.out.print(obj);
 	}
