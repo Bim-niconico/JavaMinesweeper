@@ -71,7 +71,19 @@ public class Board {
 	 * ステージを描画させるメソッドです。
 	 */
 	public void draw() {
+		for (int i = 0; i < stageWidth; ++i) {
+			if (i == 0) print("    ");
+			print(" " + (i+1));
+		}
+		println();
+
 		for (int y = 0; y < windowHeight; ++y) {
+			if (y != windowHeight-1) {
+				print(y == 0 ? "  " : " " + y);
+			} else {
+				print("  ");
+			}
+
 			for (int x = 0; x < windowWidth; ++x) {
 				switch (stage[y][x]) {
 				case SPACE:
@@ -104,6 +116,41 @@ public class Board {
 			}
 		}
 	}
+
+
+	/**
+	 * 指定したマスを開くメソッドです。
+	 * 開いたらそこのマスが爆弾か判断し、爆弾でなければ周囲の爆弾の数を数えます。
+	 * また、周囲に爆弾がなければ、空マスの部分を開けます。
+	 * @param x 開くマスの横軸が渡されます。
+	 * @param y 開くマスの縦軸が渡されます。
+	 * @return そのマスが開けるならtrueを返しそうでなければfalseを返します。
+	 */
+	public boolean put(int x, int y) {
+		if (isBomb(x, y)) return false;
+		return true;
+	}
+
+	/*
+	 * 指定したマスが爆弾かを判断するメソッド。
+	 * 爆弾であればtrueを返し、そうでなければfalseを返す。
+	 */
+	private boolean isBomb(int x, int y) {
+		return stage[y][x] == State.BOMB;
+	}
+
+	/**
+	 * 盤面の範囲外判定を行うメソッドです。
+	 * @param x 指定した横軸が渡されます。
+	 * @param y 指定した縦軸が渡されます。
+	 * @return 指定した値が盤面の範囲外であればtrueを返し、範囲内であればfalseを返します。
+	 */
+	public boolean isStageOut(int x, int y) {
+		if (x >= stageWidth || y >= stageHeight) return true;
+		if (x <= 0 || y <= 0) return true;
+		return false;
+	}
+
 
 	/* ====================
 	 * 以下、アクセッサ
