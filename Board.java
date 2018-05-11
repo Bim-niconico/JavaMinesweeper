@@ -95,6 +95,9 @@ public class Board {
 				case BOMB:
 					print("※");
 					break;
+				case OPEN:
+					print(" " + countBomb(x, y));
+					break;
 				default:
 					print("er");
 					break;
@@ -131,6 +134,25 @@ public class Board {
 		return true;
 	}
 
+	/**
+	 * 指定したマスの周りにある爆弾の数を数えます。
+	 * @param x 開くマスの横軸が渡されます。
+	 * @param y 開くマスの縦軸が渡されます。
+	 * @return そのマスの周りにある爆弾の数が返されます。
+	 */
+	public int countBomb(int x, int y) {
+		int res = 0;
+
+		for (int i = -1; i <= 1; ++i) {
+			for (int j = -1; j <= 1; ++j) {
+				if (isStageOut(x+j, y+i)) continue;
+				if (isBomb(x+j, y+i)) ++res;
+			}
+		}
+
+		return res;
+	}
+
 	/*
 	 * 指定したマスが爆弾かを判断するメソッド。
 	 * 爆弾であればtrueを返し、そうでなければfalseを返す。
@@ -146,7 +168,7 @@ public class Board {
 	 * @return 指定した値が盤面の範囲外であればtrueを返し、範囲内であればfalseを返します。
 	 */
 	public boolean isStageOut(int x, int y) {
-		if (x >= stageWidth || y >= stageHeight) return true;
+		if (x > stageWidth || y > stageHeight) return true;
 		if (x <= 0 || y <= 0) return true;
 		return false;
 	}
@@ -169,6 +191,10 @@ public class Board {
 
 	public int getWindowHeight() {
 		return windowHeight;
+	}
+
+	public void setStageCell(int x, int y, State state) {
+		stage[y][x] = state;
 	}
 
 	/* ====================

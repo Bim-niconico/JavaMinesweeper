@@ -4,22 +4,26 @@ import java.util.Scanner;
 
 public class Main {
 	public static void main(String[] args) throws IOException, InterruptedException{
-		Board board = new Board();
-		Scanner sc = new Scanner(System.in);
+		Board board = new Board();				// ゲームステージ
+		Scanner sc = new Scanner(System.in);	// 入力
+		boolean drawUpdateFlag = false;			// ゲームの画面更新フラグ
 
-		// system("cls");
+		// system("cls");(C, C++)
 		ConsoleControle cc = new ConsoleControle("cmd", "/c", "cls");
 
-		// game main loop
+		// ゲームのメインループ
 		while (true) {
 			board.draw();
 			try {
+				System.out.print("x >>");
 				int x = sc.nextInt();
+				System.out.print("y >>");
 				int y = sc.nextInt();
 
 				if (!board.isStageOut(x, y)) {
 					// 選択したマスが爆弾だったら終了
 					if (!board.put(x, y)) break;
+					else board.setStageCell(x, y, State.OPEN);
 				} else {
 					cc.execute();
 					System.out.println("範囲外の数値です。");
@@ -33,6 +37,7 @@ public class Main {
 				continue;
 			}
 
+			// ゲーム画面の更新
 			cc.execute();
 		}
 	}
