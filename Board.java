@@ -173,6 +173,20 @@ public class Board {
 		return false;
 	}
 
+	/**
+	 * ゲームをクリアしたか判定するメソッドです。
+	 * @return クリアしているならtrueを返し、そうでなければfalseが返されます。
+	 */
+	public boolean isClear() {
+		for (int y = 1; y <= stageHeight; ++y) {
+			for (int x = 1; x <= stageWidth; ++x) {
+				if (stage[y][x] == State.SPACE) return false;
+			}
+		}
+
+		return true;
+	}
+
 
 	/* ====================
 	 * 以下、アクセッサ

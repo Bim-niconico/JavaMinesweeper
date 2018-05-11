@@ -6,13 +6,22 @@ public class Main {
 	public static void main(String[] args) throws IOException, InterruptedException{
 		Board board = new Board();				// ゲームステージ
 		Scanner sc = new Scanner(System.in);	// 入力
+
+		// フラグ
 		boolean drawUpdateFlag = false;			// ゲームの画面更新フラグ
+		boolean clearFlag = false;				// ゲームのクリア判定フラグ
+		boolean gameOverFlag = false;			// ゲームオーバの判定フラグ
 
 		// system("cls");(C, C++)
 		ConsoleControle cc = new ConsoleControle("cmd", "/c", "cls");
 
 		// ゲームのメインループ
 		while (true) {
+			if (board.isClear()) {
+				clearFlag = true;
+				break;
+			}
+
 			board.draw();
 			try {
 				System.out.print("x >>");
@@ -22,8 +31,13 @@ public class Main {
 
 				if (!board.isStageOut(x, y)) {
 					// 選択したマスが爆弾だったら終了
-					if (!board.put(x, y)) break;
-					else board.setStageCell(x, y, State.OPEN);
+					if (!board.put(x, y)) {
+						gameOverFlag = true;
+						break;
+					}
+					else {
+						board.setStageCell(x, y, State.OPEN);
+					}
 				} else {
 					cc.execute();
 					System.out.println("範囲外の数値です。");
@@ -40,5 +54,9 @@ public class Main {
 			// ゲーム画面の更新
 			cc.execute();
 		}
+		// ゲームクリア判定
+		if (clearFlag) System.out.println("おめでとうございます！");
+		// ゲームオーバー判定
+		if (gameOverFlag) System.out.println("ゲームオーバー");
 	}
 }
