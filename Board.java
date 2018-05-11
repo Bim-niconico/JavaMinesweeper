@@ -1,12 +1,14 @@
 import java.util.Random;
 
 public class Board {
+	private boolean debugMode = true;				// デバッグモード
+
 	private int stageWidth = 5;						// 盤面の横幅
 	private int stageHeight = 5;					// 盤面の縦幅
 	private int windowWidth = stageWidth+2;			// 画面の横幅
 	private int windowHeight = stageHeight+2;		// 画面の縦幅
 
-	private State[][] stage;						// ステージ
+	private Cell[][] stage;						// ステージ
 
 	/**
 	 * Boardクラスのコンストラクタです。
@@ -44,27 +46,40 @@ public class Board {
 	 * 爆弾はランダムで配置されます。
 	 */
 	private void init() {
-		stage = new State[windowWidth][windowHeight];
+		stage = new Cell[windowWidth][windowHeight];
+
+		stageInit();
 
 		// 壁を生成
 		for (int y = 0; y < windowHeight; ++y) {
 			for (int x = 0; x < windowWidth; ++x) {
-				stage[0][x] = State.WALL;
-				stage[windowHeight-1][x] = State.WALL;
-				stage[y][0] = State.WALL;
-				stage[y][windowWidth-1] = State.WALL;
+				stage[0][x].setState(State.WALL);
+				stage[windowHeight-1][x].setState(State.WALL);
+				stage[y][0].setState(State.WALL);
+				stage[y][windowWidth-1].setState(State.WALL);
 			}
 		}
 
 		// 空マスを生成
 		for (int y = 0; y < stageHeight; ++y) {
 			for (int x = 0; x < stageWidth; ++x) {
-				stage[y+1][x+1] = State.SPACE;
+				stage[y+1][x+1].setState(State.SPACE);
 			}
 		}
 
 		// 爆弾を配置
 		putBomb();
+	}
+
+	/*
+	 * ステージの状態をスペースで初期化します。
+	 */
+	private void stageInit() {
+		for (int y = 0; y < windowHeight; ++y) {
+			for (int x = 0; x < windowWidth; ++x ) {
+				stage[y][x] = new Cell(State.SPACE);
+			}
+		}
 	}
 
 	/**
@@ -85,7 +100,51 @@ public class Board {
 			}
 
 			for (int x = 0; x < windowWidth; ++x) {
-				switch (stage[y][x]) {
+				switch (stage[y][x].getState()) {
+				case SPACE:
+					print("□");
+					break;
+				case WALL:
+					print("■");
+					break;
+				case BOMB:
+					if (debugMode) {
+						print("※");
+						break;
+					}
+					print("□");
+					break;
+				case OPEN:
+					print(" " + countBomb(x, y));
+					break;
+				default:
+					print("er");
+					break;
+				}
+			}
+			println();
+		}
+	}
+
+	/**
+	 * ゲームオーバーになった際、回答を表示するメソッドです。
+	 */
+	public void answer() {
+		for (int i = 0; i < stageWidth; ++i) {
+			if (i == 0) print("    ");
+			print(" " + (i+1));
+		}
+		println();
+
+		for (int y = 0; y < windowHeight; ++y) {
+			if (y != windowHeight-1) {
+				print(y == 0 ? "  " : " " + y);
+			} else {
+				print("  ");
+			}
+
+			for (int x = 0; x < windowWidth; ++x) {
+				switch (stage[y][x].getState()) {
 				case SPACE:
 					print("□");
 					break;
@@ -115,7 +174,7 @@ public class Board {
 		for (int y = 0; y < stageHeight; ++y) {
 			for (int x = 0; x < stageWidth; ++x) {
 				int n = r.nextInt(15);
-				if (n > 10) stage[y+1][x+1] = State.BOMB;
+				if (n > 12) stage[y+1][x+1].setState(State.BOMB);
 			}
 		}
 	}
@@ -153,12 +212,32 @@ public class Board {
 		return res;
 	}
 
+
+	/**
+	 * 周囲の連なるマスの爆弾の数が0の時にそのマスを自動的に開くメソッドです。
+	 */
+	public void neighborCountBomb(int x, int y) {
+		for (int i = -1; i <= 1; ++i ) {
+			for (int j = -1; j < 1; ++j) {
+				if (i == 0 && j == 0) continue;			// 自分自身のマスだったら
+				if (isStageOut(x+j, y+i)) continue;		// ステージ外だったら
+				if (isBomb(x+j, y+i)) continue;			// 指定したマスが爆弾だったら
+
+				if (countBomb(x+j, y+i) == 0) {	
+					stage[y+i][x+j].setState(State.OPEN);
+					neighborCountBomb(y+i, x+j);
+				}
+			}
+		}
+	}
+
+
 	/*
 	 * 指定したマスが爆弾かを判断するメソッド。
 	 * 爆弾であればtrueを返し、そうでなければfalseを返す。
 	 */
 	private boolean isBomb(int x, int y) {
-		return stage[y][x] == State.BOMB;
+		return stage[y][x].getState() == State.BOMB;
 	}
 
 	/**
@@ -168,9 +247,7 @@ public class Board {
 	 * @return 指定した値が盤面の範囲外であればtrueを返し、範囲内であればfalseを返します。
 	 */
 	public boolean isStageOut(int x, int y) {
-		if (x > stageWidth || y > stageHeight) return true;
-		if (x <= 0 || y <= 0) return true;
-		return false;
+		return stage[y][x].getState() == State.WALL;
 	}
 
 	/**
@@ -180,7 +257,7 @@ public class Board {
 	public boolean isClear() {
 		for (int y = 1; y <= stageHeight; ++y) {
 			for (int x = 1; x <= stageWidth; ++x) {
-				if (stage[y][x] == State.SPACE) return false;
+				if (stage[y][x].getState() == State.SPACE) return false;
 			}
 		}
 
@@ -208,7 +285,7 @@ public class Board {
 	}
 
 	public void setStageCell(int x, int y, State state) {
-		stage[y][x] = state;
+		stage[y][x].setState(state);
 	}
 
 	/* ====================

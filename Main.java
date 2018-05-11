@@ -37,6 +37,7 @@ public class Main {
 					}
 					else {
 						board.setStageCell(x, y, State.OPEN);
+						board.neighborCountBomb(x, y);
 					}
 				} else {
 					cc.execute();
@@ -57,6 +58,10 @@ public class Main {
 		// ゲームクリア判定
 		if (clearFlag) System.out.println("おめでとうございます！");
 		// ゲームオーバー判定
-		if (gameOverFlag) System.out.println("ゲームオーバー");
+		if (gameOverFlag) {
+			cc.execute();
+			board.answer();
+			System.out.println("ゲームオーバー");
+		}
 	}
 }
