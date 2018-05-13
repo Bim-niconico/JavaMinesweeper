@@ -1,3 +1,9 @@
+/*
+ * TODO
+ * ます、cellは一回に状態を二つ以上持てるようにするほうが一般的
+ * ビットマスク要検討
+ */
+
 public class Cell {
 	private State state;			// マスの状態
 	private boolean checkFlag;		// マスが探索済みか
