@@ -1,14 +1,14 @@
 import java.util.Random;
 
 public class Board {
-	private boolean debugMode = true;				// デバッグモード
+	private boolean debugMode = false;				// デバッグモード
 
 	private int stageWidth = 5;						// 盤面の横幅
 	private int stageHeight = 5;					// 盤面の縦幅
 	private int windowWidth = stageWidth+2;			// 画面の横幅
 	private int windowHeight = stageHeight+2;		// 画面の縦幅
 
-	private Cell[][] stage;						// ステージ
+	private Cell[][] stage;							// ステージ
 
 	/**
 	 * Boardクラスのコンストラクタです。
@@ -225,6 +225,9 @@ public class Board {
 				if (countBomb(dx, dy) == 0) {
 					stage[y][x].state = State.OPEN;
 					neighborCountBomb(dx, dy);
+				} else {
+					if (!isBomb(dx, dy))
+						stage[dy][dx].state = State.OPEN;
 				}
 			}
 		}

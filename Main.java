@@ -56,6 +56,7 @@ public class Main {
 			cc.execute();
 		}
 		// ゲームクリア判定
+		board.answer();
 		if (clearFlag) System.out.println("おめでとうございます！");
 		// ゲームオーバー判定
 		if (gameOverFlag) {
