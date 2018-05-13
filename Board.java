@@ -1,7 +1,3 @@
-/*
- * 411の好み - 1オリジンかな
- */
-
 import java.util.Random;
 
 public class Board {
@@ -57,17 +53,17 @@ public class Board {
 		// 壁を生成
 		for (int y = 0; y < windowHeight; ++y) {
 			for (int x = 0; x < windowWidth; ++x) {
-				stage[0][x].setState(State.WALL);
-				stage[windowHeight-1][x].setState(State.WALL);
-				stage[y][0].setState(State.WALL);
-				stage[y][windowWidth-1].setState(State.WALL);
+				stage[0][x].state = State.WALL;
+				stage[windowHeight-1][x].state = State.WALL;
+				stage[y][0].state = State.WALL;
+				stage[y][windowWidth-1].state = State.WALL;
 			}
 		}
 
 		// 空マスを生成
 		for (int y = 0; y < stageHeight; ++y) {
 			for (int x = 0; x < stageWidth; ++x) {
-				stage[y+1][x+1].setState(State.SPACE);
+				stage[y+1][x+1].state = State.SPACE;
 			}
 		}
 
@@ -104,7 +100,7 @@ public class Board {
 			}
 
 			for (int x = 0; x < windowWidth; ++x) {
-				switch (stage[y][x].getState()) {
+				switch (stage[y][x].state) {
 				case SPACE:
 					print("□");
 					break;
@@ -148,7 +144,7 @@ public class Board {
 			}
 
 			for (int x = 0; x < windowWidth; ++x) {
-				switch (stage[y][x].getState()) {
+				switch (stage[y][x].state) {
 				case SPACE:
 					print("□");
 					break;
@@ -178,7 +174,7 @@ public class Board {
 		for (int y = 0; y < stageHeight; ++y) {
 			for (int x = 0; x < stageWidth; ++x) {
 				int n = r.nextInt(15);
-				if (n > 12) stage[y+1][x+1].setState(State.BOMB);
+				if (n > 12) stage[y+1][x+1].state = State.BOMB;
 			}
 		}
 	}
@@ -209,6 +205,7 @@ public class Board {
 			for (int j = -1; j <= 1; ++j) {
 				if (isStageOut(x+j, y+i)) continue;
 				if (isBomb(x+j, y+i)) ++res;
+				stage[y+i][x+j].checkFlag = true;
 			}
 		}
 
@@ -220,15 +217,14 @@ public class Board {
 	 * 周囲の連なるマスの爆弾の数が0の時にそのマスを自動的に開くメソッドです。
 	 */
 	public void neighborCountBomb(int x, int y) {
-		for (int i = -1; i <= 1; ++i ) {
-			for (int j = -1; j < 1; ++j) {
-				if (i == 0 && j == 0) continue;			// 自分自身のマスだったら
-				if (isStageOut(x+j, y+i)) continue;		// ステージ外だったら
-				if (isBomb(x+j, y+i)) continue;			// 指定したマスが爆弾だったら
+		for (int vecY = -1; vecY <= 1; ++vecY) {
+			for (int vecX = -1; vecX <= 1; ++vecX) {
+				int dx = x+vecX; int dy = y+vecY;
 
-				if (countBomb(x+j, y+i) == 0) {	
-					stage[y+i][x+j].setState(State.OPEN);
-					neighborCountBomb(y+i, x+j);
+				if (isStageOut(dx, dy) || isOpenCell(dx, dy)) continue;
+				if (countBomb(dx, dy) == 0) {
+					stage[y][x].state = State.OPEN;
+					neighborCountBomb(dx, dy);
 				}
 			}
 		}
@@ -239,7 +235,7 @@ public class Board {
 	 * 爆弾であればtrueを返し、そうでなければfalseを返す。
 	 */
 	private boolean isBomb(int x, int y) {
-		return stage[y][x].getState() == State.BOMB;
+		return stage[y][x].state == State.BOMB;
 	}
 
 	/**
@@ -249,7 +245,7 @@ public class Board {
 	 * @return 指定した値が盤面の範囲外であればtrueを返し、範囲内であればfalseを返します。
 	 */
 	public boolean isStageOut(int x, int y) {
-		return stage[y][x].getState() == State.WALL;
+		return stage[y][x].state == State.WALL;
 	}
 
 	/**
@@ -259,11 +255,18 @@ public class Board {
 	public boolean isClear() {
 		for (int y = 1; y <= stageHeight; ++y) {
 			for (int x = 1; x <= stageWidth; ++x) {
-				if (stage[y][x].getState() == State.SPACE) return false;
+				if (stage[y][x].state == State.SPACE) return false;
 			}
 		}
 
 		return true;
+	}
+
+	/*
+	 * 指定したマスが開けられている場合にはtrueをそうで無い場合はfalseを返します。
+	 */
+	private boolean isOpenCell(int x, int y) {
+		return stage[y][x].state == State.OPEN;
 	}
 
 
@@ -287,7 +290,7 @@ public class Board {
 	}
 
 	public void setStageCell(int x, int y, State state) {
-		stage[y][x].setState(state);
+		stage[y][x].state = state;
 	}
 
 	/* ====================

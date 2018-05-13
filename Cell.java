@@ -1,13 +1,7 @@
-/*
- * TODO
- * ます、cellは一回に状態を二つ以上持てるようにするほうが一般的
- * ビットマスク要検討
- */
-
 public class Cell {
-	private State state;			// マスの状態
-	private boolean checkFlag;		// マスが探索済みか
-	private boolean selectFlag;		// マスが選択されているか
+	public State state;			// マスの状態
+	public boolean checkFlag;		// マスが探索済みか
+	public boolean selectFlag;		// マスが選択されているか
 
 	/**
 	 * Cellクラスのデフォルトコンストラクタです。
@@ -27,32 +21,5 @@ public class Cell {
 	public Cell(State state) {
 		this();
 		this.state = state;
-	}
-
-	/* ====================
-	 * 以下、アクセッサ
-	 * ====================*/
-	public void setState(State s) {
-		state = s;
-	}
-
-	public State getState() {
-		return state;
-	}
-
-	public void setCheckFlag(boolean b) {
-		checkFlag = b;
-	}
-
-	public boolean getCheckFlag() {
-		return checkFlag;
-	}
-
-	public void setSelectFlag(boolean b) {
-		selectFlag = b;
-	}
-
-	public boolean getSelectFlag() {
-		return selectFlag;
 	}
 }
