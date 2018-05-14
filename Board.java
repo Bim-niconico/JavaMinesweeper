@@ -1,13 +1,15 @@
 import java.util.Random;
 
 public class Board {
-	private boolean debugMode = false;				// デバッグモード
+	private boolean debugMode = true;				// デバッグモード
 
-	private int stageWidth = 5;						// 盤面の横幅
-	private int stageHeight = 5;					// 盤面の縦幅
-	private int windowWidth = stageWidth+2;			// 画面の横幅
+	private int stageWidth	 = 10;					// 盤面の横幅
+	private int stageHeight  = 10;					// 盤面の縦幅
+	private int windowWidth  = stageWidth+2;		// 画面の横幅
 	private int windowHeight = stageHeight+2;		// 画面の縦幅
 
+
+	private int difficulty;							// 難易度 difficulty/100の確立で爆弾が配置される
 	private Cell[][] stage;							// ステージ
 
 	/**
@@ -47,6 +49,7 @@ public class Board {
 	 */
 	private void init() {
 		stage = new Cell[windowWidth][windowHeight];
+		difficulty = 20;
 
 		stageInit();
 
@@ -94,7 +97,10 @@ public class Board {
 
 		for (int y = 0; y < windowHeight; ++y) {
 			if (y != windowHeight-1) {
-				print(y == 0 ? "  " : " " + y);
+				if (y == 0) print("  ");
+				else if (y < 10) print(" " + y);
+				else print(y);
+
 			} else {
 				print("  ");
 			}
@@ -173,8 +179,8 @@ public class Board {
 		Random r = new Random();
 		for (int y = 0; y < stageHeight; ++y) {
 			for (int x = 0; x < stageWidth; ++x) {
-				int n = r.nextInt(15);
-				if (n > 12) stage[y+1][x+1].state = State.BOMB;
+				int n = r.nextInt(100);
+				if (n <= difficulty) stage[y+1][x+1].state = State.BOMB;
 			}
 		}
 	}
@@ -294,6 +300,10 @@ public class Board {
 
 	public void setStageCell(int x, int y, State state) {
 		stage[y][x].state = state;
+	}
+
+	public int getDifficulty() {
+		return difficulty;
 	}
 
 	/* ====================

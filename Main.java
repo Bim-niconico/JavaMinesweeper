@@ -1,11 +1,13 @@
 import java.io.IOException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+import java.util.Random;
 
 public class Main {
 	public static void main(String[] args) throws IOException, InterruptedException{
 		Board board = new Board();				// ゲームステージ
 		Scanner sc = new Scanner(System.in);	// 入力
+		Random r = new Random();				// 乱数
 
 		// フラグ
 		boolean drawUpdateFlag = false;			// ゲームの画面更新フラグ
@@ -37,7 +39,8 @@ public class Main {
 					}
 					else {
 						board.setStageCell(x, y, State.OPEN);
-						board.neighborCountBomb(x, y);
+						if ((100 - board.getDifficulty()) >= r.nextInt(100))
+							board.neighborCountBomb(x, y);
 					}
 				} else {
 					cc.execute();
