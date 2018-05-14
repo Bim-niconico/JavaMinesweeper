@@ -26,21 +26,56 @@ public class Main {
 
 			board.draw();
 			try {
+				/*
 				System.out.print("x >>");
 				int x = sc.nextInt();
 				System.out.print("y >>");
 				int y = sc.nextInt();
+				System.out.print("旗を立てますか？ y : n >>");
+				String f = sc.next();
+				*/
+
+				System.out.println("フォーマット : action,x,y");
+				System.out.println("action : \"f\" - 旗 \"o\" - 開く");
+				System.out.print("コマンドを入力 >>");
+				String input = sc.next();
+
+				// コマンドを分割
+				String[] f = input.split(",", 3);
+				String command = f[0];
+				int x = Integer.parseInt(f[1]);
+				int y = Integer.parseInt(f[2]);
+
+				if ((command.charAt(0) != 'f' && command.charAt(0) != 'o')) {
+					cc.execute();
+					System.out.println("無効な値です。");
+					continue;
+				}
 
 				if (!board.isStageOut(x, y)) {
-					// 選択したマスが爆弾だったら終了
-					if (!board.put(x, y)) {
-						gameOverFlag = true;
-						break;
-					}
-					else {
-						board.setStageCell(x, y, State.OPEN);
-						if ((100 - board.getDifficulty()) >= r.nextInt(100))
-							board.neighborCountBomb(x, y);
+					// 旗を置かない場合
+					if (command.charAt(0) == 'n' || !board.checkPutFlag(x, y)) {
+						// 選択したマスが爆弾だったら終了
+						if (!board.put(x, y)) {
+							gameOverFlag = true;
+							break;
+						}
+						else {
+							board.setStageCell(x, y, State.OPEN);
+							if ((100 - board.getDifficulty()) >= r.nextInt(100))
+								board.neighborCountBomb(x, y);
+						}
+					} else {
+						if (board.checkPutFlag(x, y))
+							board.putFlag(x, y);
+						else if (board.isBomb(x, y)) {
+							gameOverFlag = true;
+							break;
+						} else {
+							cc.execute();
+							System.out.println("その位置に旗は置けません。");
+							continue;
+						}
 					}
 				} else {
 					cc.execute();
@@ -59,7 +94,6 @@ public class Main {
 			cc.execute();
 		}
 		// ゲームクリア判定
-		board.answer();
 		if (clearFlag) System.out.println("おめでとうございます！");
 		// ゲームオーバー判定
 		if (gameOverFlag) {

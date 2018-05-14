@@ -3,4 +3,5 @@ public enum State {
 	WALL, 		// •Ç
 	BOMB, 		// ”š’e
 	OPEN, 		// ŠJ‚¯‚½ƒ}ƒX
+	FLAG,		// Šø
 }

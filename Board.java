@@ -1,7 +1,7 @@
 import java.util.Random;
 
 public class Board {
-	private boolean debugMode = true;				// デバッグモード
+	private boolean debugMode = false;				// デバッグモード
 
 	private int stageWidth	 = 10;					// 盤面の横幅
 	private int stageHeight  = 10;					// 盤面の縦幅
@@ -100,7 +100,6 @@ public class Board {
 				if (y == 0) print("  ");
 				else if (y < 10) print(" " + y);
 				else print(y);
-
 			} else {
 				print("  ");
 			}
@@ -114,10 +113,18 @@ public class Board {
 					print("■");
 					break;
 				case BOMB:
+					// デバッグモード
 					if (debugMode) {
 						print("※");
 						break;
 					}
+
+					// 旗が立てられていたら
+					if (stage[y][x].isFlag) {
+						print("Ｆ");
+						break;
+					}
+
 					print("□");
 					break;
 				case OPEN:
@@ -144,7 +151,9 @@ public class Board {
 
 		for (int y = 0; y < windowHeight; ++y) {
 			if (y != windowHeight-1) {
-				print(y == 0 ? "  " : " " + y);
+				if (y == 0) print("  ");
+				else if (y < 10) print(" " + y);
+				else print(y);
 			} else {
 				print("  ");
 			}
@@ -158,10 +167,19 @@ public class Board {
 					print("■");
 					break;
 				case BOMB:
+					// 旗が立てられていたら
+					if (stage[y][x].isFlag) {
+						print("Ｆ");
+						break;
+					}
+
 					print("※");
 					break;
 				case OPEN:
 					print(" " + countBomb(x, y));
+					break;
+				case FLAG:
+					print("Ｆ");
 					break;
 				default:
 					print("er");
@@ -221,6 +239,8 @@ public class Board {
 
 	/**
 	 * 周囲の連なるマスの爆弾の数が0の時にそのマスを自動的に開くメソッドです。
+	 * @param x 探索対象のx軸の座標が渡されます。
+	 * @param y 探索対象のy軸の座標が渡されます。
 	 */
 	public void neighborCountBomb(int x, int y) {
 		for (int vecY = -1; vecY <= 1; ++vecY) {
@@ -239,11 +259,32 @@ public class Board {
 		}
 	}
 
-	/*
+	/**
+	 * 旗を立てることが出来るか判定するメソッドです。
+	 * @param x 旗を立てる位置のX軸座標が渡されます。
+	 * @param y 旗を立てる位置のY軸座標が渡されます。
+	 * @return 旗を立てることが出来ればtrueをそうでなければfalseを返します。
+	 */
+	public boolean checkPutFlag(int x, int y) {
+		if (isStageOut(x, y) ||
+			isOpenCell(x, y) ||
+			isFlag(x, y)) return false;
+
+		return true;
+	}
+
+	public void putFlag(int x, int y) {
+		stage[y][x].isFlag = true;
+	}
+
+	/**
 	 * 指定したマスが爆弾かを判断するメソッド。
 	 * 爆弾であればtrueを返し、そうでなければfalseを返す。
+	 * @param x 判定対象のマスのX軸座標が渡されます。
+	 * @param y 判定対象のマスのY軸座標が渡されます。
+	 * @return 爆弾であればtrueをそうでない場合はfalseを返します。
 	 */
-	private boolean isBomb(int x, int y) {
+	public boolean isBomb(int x, int y) {
 		return stage[y][x].state == State.BOMB;
 	}
 
@@ -278,6 +319,12 @@ public class Board {
 		return stage[y][x].state == State.OPEN;
 	}
 
+	/*
+	 * 指定したマスに旗が立てられているか判定するメソッド。
+	 */
+	private boolean isFlag(int x, int y) {
+		return stage[y][x].isFlag;
+	}
 
 	/* ====================
 	 * 以下、アクセッサ

@@ -1,7 +1,8 @@
 public class Cell {
-	public State state;			// マスの状態
+	public State state;				// マスの状態
 	public boolean checkFlag;		// マスが探索済みか
 	public boolean selectFlag;		// マスが選択されているか
+	public boolean isFlag;			// 旗を立てているかのフラグ
 
 	/**
 	 * Cellクラスのデフォルトコンストラクタです。
@@ -11,6 +12,7 @@ public class Cell {
 		this.state = State.SPACE;
 		checkFlag = false;
 		selectFlag = false;
+		isFlag = false;
 	}
 
 	/**
