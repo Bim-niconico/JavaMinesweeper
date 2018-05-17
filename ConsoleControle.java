@@ -18,7 +18,13 @@ public class ConsoleControle {
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
-	public void execute() throws IOException, InterruptedException {
-		pb.inheritIO().start().waitFor();
+	public void execute() {
+		try {
+			pb.inheritIO().start().waitFor();
+		} catch (IOException e) {
+		} catch (Exception e) {
+			System.out.println("致命的なエラーが発生しました。");
+			System.out.println("アプリケーションを終了します。");
+		}
 	}
 }

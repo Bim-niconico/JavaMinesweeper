@@ -1,17 +1,15 @@
 import java.util.Scanner;
 
 public class Scene {
-	public enum SceneID {
-		START,	// スタート画面
-		GAME,	// ゲーム画面
-		MENU,	// メニュー画面
-		END,	// 終了画面
+	private SceneID scene;		// 現在のゲームシーン
+
+	public Scene() {
+		scene = SceneID.START;
 	}
 
-	private SceneID scene;
-
-	public Scene() {}
-
+	/*
+	 * ゲームのスタート画面です。
+	 */
 	private void sceneStart() {
 		println("■■■■■■■■■■");
 		println("■                ■");
@@ -26,6 +24,9 @@ public class Scene {
 		println("■■■■■■■■■■");
 	}
 
+	/*
+	 * ゲームのメニュー画面です。
+	 */
 	private void sceneMenu() {
 		println("■■■■■■■■■■");
 		println("■                ■");
@@ -36,12 +37,33 @@ public class Scene {
 		println("■■■■■■■■■■");
 	}
 
+	/*
+	 * ゲームの終了画面です。
+	 */
 	private void sceneEnd() {
 		println("■■■■■■■■■■");
 		println("■                ■");
 		println("■ お疲れ様でした ■");
 		println("■                ■");
 		println("■■■■■■■■■■");
+	}
+
+	/*
+	 * 指定した画面を描画するメソッドです。
+	 */
+	public void selectView(SceneID id) {
+		if (id != SceneID.PLAY) {
+			switch (id) {
+			case START:
+				sceneStart(); break;
+			case MENU:
+				sceneMenu();	break;
+			case END:
+				sceneEnd(); break;
+			default:
+				print("致命的なエラー");
+			}
+		}
 	}
 
 	/* ====================
