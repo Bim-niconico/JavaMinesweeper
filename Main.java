@@ -8,6 +8,7 @@ public class Main {
 		Board board = new Board();				// ゲームステージ
 		Scanner sc = new Scanner(System.in);	// 入力
 		Random r = new Random();				// 乱数
+		Scene s = new Scene();					// 画面のシーン
 
 		// フラグ
 		boolean drawUpdateFlag = false;			// ゲームの画面更新フラグ
@@ -19,6 +20,15 @@ public class Main {
 
 		// ゲームのメインループ
 		while (true) {
+			// スタート画面
+			
+
+			// ゲーム画面
+
+
+			// 終了画面
+
+
 			if (board.isClear()) {
 				clearFlag = true;
 				break;
@@ -26,15 +36,6 @@ public class Main {
 
 			board.draw();
 			try {
-				/*
-				System.out.print("x >>");
-				int x = sc.nextInt();
-				System.out.print("y >>");
-				int y = sc.nextInt();
-				System.out.print("旗を立てますか？ y : n >>");
-				String f = sc.next();
-				*/
-
 				System.out.println("フォーマット : action,x,y");
 				System.out.println("action : \"f\" - 旗 \"o\" - 開く");
 				System.out.print("コマンドを入力 >>");
@@ -54,7 +55,7 @@ public class Main {
 
 				if (!board.isStageOut(x, y)) {
 					// 旗を置かない場合
-					if (command.charAt(0) == 'n' || !board.checkPutFlag(x, y)) {
+					if (command.charAt(0) == 'o' || !board.checkPutFlag(x, y)) {
 						// 選択したマスが爆弾だったら終了
 						if (!board.put(x, y)) {
 							gameOverFlag = true;
@@ -65,6 +66,7 @@ public class Main {
 							if ((100 - board.getDifficulty()) >= r.nextInt(100))
 								board.neighborCountBomb(x, y);
 						}
+					// 旗を置く場合
 					} else {
 						if (board.checkPutFlag(x, y))
 							board.putFlag(x, y);
@@ -90,7 +92,7 @@ public class Main {
 				continue;
 			}
 
-			// ゲーム画面の更新
+			// ゲーム画面の削除
 			cc.execute();
 		}
 		// ゲームクリア判定
