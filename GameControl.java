@@ -7,6 +7,7 @@ public class GameControl {
 	private Scene gameScene;		// 現在のゲームのシーン
 	private Board board;			// 盤面を管理するオブジェクト
 	private Scanner sc;				// 入力用
+	private StageConfig config;		// ステージの構成
 
 	/**
 	 * GameControlクラスのコンストラクタです。
@@ -15,7 +16,7 @@ public class GameControl {
 	public GameControl() {
 		gameScene = new Scene();
 		sc = new Scanner(System.in);
-		board = new Board();
+		config = new StageConfig();
 	}
 
 	/**
@@ -31,6 +32,21 @@ public class GameControl {
 				int select = sc.nextInt();
 				boolean isBreak = (select >= 1 && select <= 4) ? true : false;
 				if (isBreak) {
+					int[] stageData = new int[3];	// ステージデータ
+					switch (select) {
+					case 1: stageData = config.getConfig(Difficulty.EASY); break;
+					case 2: stageData = config.getConfig(Difficulty.NORMAL); break;
+					case 3: stageData = config.getConfig(Difficulty.HARD); break;
+					case 4: break; // TODO
+					default: System.exit(0);	// 本当は駄目、後で修正要
+					}
+
+					int width  = stageData[0];
+					int height = stageData[1];
+					int bomb   = stageData[2];
+					// 選択した難易度によってステージを構築
+					board = new Board(width, height, bomb);
+
 					return select;
 				} else {
 					System.out.println("入力値が正しくありません。");
@@ -53,16 +69,23 @@ public class GameControl {
 	/**
 	 * ゲームのプレイ画面を構築するメソッドです。
 	 * 引数にはプレイヤーが選択した難易度が渡されます。
-	 * @param select プレイヤーが選択した難易度が渡されます。
+	 * @param level プレイヤーが選択した難易度が渡されます。
 	 */
 	public void gamePlay(int level) {
 		gameScene.setSceneID(SceneID.PLAY);
 		board.draw();
 
 		String[] commands = inputMessage();
-		char command = commands[0].charAt(0);
+		String command = commands[0];
 		int x = Integer.parseInt(commands[1]);
 		int y = Integer.parseInt(commands[2]);
+
+		if (command.length() == 1) {
+			if (command.equals("o")) {			// マスを開く場合
+			} else if (command.equals("f")) {	// 旗を置く場合
+			} else if (command.equals("m")) {	// メニューを開く場合
+			}
+		}
 
 	}
 

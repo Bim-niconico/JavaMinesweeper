@@ -7,7 +7,7 @@ public class Main {
 	public static void main(String[] args) {
 		GameControl game = new GameControl();	// ゲームコントローラ
 		// system("cls");(C, C++)
-		ConsoleControle cc = new ConsoleControle("cmd", "/c", "cls");
+		ConsoleControl cc = new ConsoleControl("cmd", "/c", "cls");
 
 		boolean gameOverFlg = false;			// ゲームオーバーフラグ
 

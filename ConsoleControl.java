@@ -1,6 +1,6 @@
 import java.io.IOException;
 
-public class ConsoleControle {
+public class ConsoleControl {
 	private ProcessBuilder pb;
 
 	/**
@@ -9,7 +9,7 @@ public class ConsoleControle {
 	 * 実際に実行させるにはConsoleControle#execute()を使用します。
 	 * @param command 実行させたい外部コマンド
 	 */
-	public ConsoleControle(String... command) {
+	public ConsoleControl(String... command) {
 		pb = new ProcessBuilder(command);
 	}
 

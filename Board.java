@@ -3,20 +3,24 @@ import java.util.Random;
 public class Board {
 	private boolean debugMode = false;				// デバッグモード
 
-	private int stageWidth	 = 10;					// 盤面の横幅
-	private int stageHeight  = 10;					// 盤面の縦幅
-	private int windowWidth  = stageWidth+2;		// 画面の横幅
-	private int windowHeight = stageHeight+2;		// 画面の縦幅
+	private int stageWidth;			// 盤面の横幅
+	private int stageHeight;		// 盤面の縦幅
+	private int windowWidth;		// 画面の横幅
+	private int windowHeight;		// 画面の縦幅
 
 
-	private int difficulty;							// 難易度 difficulty/100の確立で爆弾が配置される
-	private Cell[][] stage;							// ステージ
+	private int difficulty;			// 難易度 difficulty/100の確立で爆弾が配置される
+	private Cell[][] stage;			// ステージ
 
 	/**
 	 * Boardクラスのコンストラクタです。
 	 * 盤面の状態を初期化し、新しいステージを構築します。
 	 */
 	public Board() {
+		stageWidth = 10;
+		stageHeight = 10;
+		windowWidth = stageWidth + 2;
+		windowHeight = stageHeight + 2;
 		init();
 	}
 
@@ -27,10 +31,13 @@ public class Board {
 	 * @param width 画面の横幅
 	 * @param height 画面の縦幅
 	 */
-	public Board(int width, int height) {
+	public Board(int width, int height, int diff) {
 		stageWidth = height;
 		stageHeight = width;
-		//TODO
+		difficulty = diff;
+		windowWidth = stageWidth + 2;
+		windowHeight = stageHeight + 2;
+		init();
 	}
 
 	/*
@@ -49,8 +56,9 @@ public class Board {
 	 */
 	private void init() {
 		stage = new Cell[windowWidth][windowHeight];
-		difficulty = 20;
 
+		println(windowHeight);
+		println(windowWidth);
 		stageInit();
 
 		// 壁を生成
