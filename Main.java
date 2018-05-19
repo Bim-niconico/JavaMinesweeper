@@ -4,19 +4,19 @@ import java.util.Scanner;
 import java.util.Random;
 
 public class Main {
+	public static final String version = "0.9.1";
+
 	public static void main(String[] args) {
 		GameControl game = new GameControl();	// ゲームコントローラ
 		// system("cls");(C, C++)
 		ConsoleControl cc = new ConsoleControl("cmd", "/c", "cls");
 
-		boolean gameOverFlg = false;			// ゲームオーバーフラグ
-
 		// スタート画面
 		int select = game.gameStart();
 		cc.execute();
 
-		while (true) {
-			// ゲーム画面
+		// ゲーム画面
+		while (!game.getGameOverFlag()) {
 			game.gamePlay(select);
 			cc.execute();
 		}

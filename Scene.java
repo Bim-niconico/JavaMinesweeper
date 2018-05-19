@@ -14,7 +14,7 @@ public class Scene {
 		println("Å°Å°Å°Å°Å°Å°Å°Å°Å°Å°");
 		println("Å°                Å°");
 		println("Å°   œ≤›Ω≤∞ ﬂ∞    Å°");
-		println("Å°                Å°");
+		println("Å°     (É¿)       Å°");
 		println("Å°                Å°");
 		println("Å°    1.EASY      Å°");
 		println("Å°    2.NORMAL    Å°");

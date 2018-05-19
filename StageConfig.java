@@ -1,8 +1,8 @@
 public class StageConfig {
 	private int[][] config = {
-		{10, 10, 20},
-		{15, 15, 30},
-		{15, 15, 40},
+		{10, 10, 20, 50},
+		{15, 15, 35, 60},
+		{20, 20, 50, 70},
 	};
 
 	public int[] getConfig(Difficulty d) {

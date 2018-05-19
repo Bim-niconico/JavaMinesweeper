@@ -1,15 +1,15 @@
 import java.util.Random;
 
 public class Board {
-	private boolean debugMode = false;				// デバッグモード
+	private boolean debugMode = true;				// デバッグモード
 
 	private int stageWidth;			// 盤面の横幅
 	private int stageHeight;		// 盤面の縦幅
 	private int windowWidth;		// 画面の横幅
 	private int windowHeight;		// 画面の縦幅
 
-
 	private int difficulty;			// 難易度 difficulty/100の確立で爆弾が配置される
+	private int openProbability;	// 周囲のマスが開く確率
 	private Cell[][] stage;			// ステージ
 
 	/**
@@ -31,12 +31,13 @@ public class Board {
 	 * @param width 画面の横幅
 	 * @param height 画面の縦幅
 	 */
-	public Board(int width, int height, int diff) {
+	public Board(int width, int height, int diff, int probability) {
 		stageWidth = height;
 		stageHeight = width;
 		difficulty = diff;
 		windowWidth = stageWidth + 2;
 		windowHeight = stageHeight + 2;
+		openProbability = probability;
 		init();
 	}
 
@@ -97,9 +98,10 @@ public class Board {
 	 * ステージを描画させるメソッドです。
 	 */
 	public void draw() {
-		for (int i = 0; i < stageWidth; ++i) {
+		for (int i = 0; i <= stageWidth; ++i) {
 			if (i == 0) print("    ");
-			print(" " + (i+1));
+			else if (i >= 1 && i <= 9) print(" " + (i));
+			else if (i >= 10) print(i);
 		}
 		println();
 
@@ -122,7 +124,7 @@ public class Board {
 					break;
 				case BOMB:
 					// デバッグモード
-					if (debugMode) {
+					if (debugMode && !stage[y][x].isFlag) {
 						print("※");
 						break;
 					}
@@ -281,8 +283,20 @@ public class Board {
 		return true;
 	}
 
+	/**
+	 * 旗を指定したマスに置くメソッドです。
+	 * @param x 旗を立てる位置のX軸座標が渡されます。
+	 * @param y 旗を立てる位置のY軸座標が渡されます。
+	 */
 	public void putFlag(int x, int y) {
 		stage[y][x].isFlag = true;
+	}
+
+	/**
+	 * ステージを初期状態に戻すメソッドです。
+	 */
+	public void stageReset() {
+		init();
 	}
 
 	/**
@@ -359,6 +373,10 @@ public class Board {
 
 	public int getDifficulty() {
 		return difficulty;
+	}
+
+	public int getOpenProbability() {
+		return openProbability;
 	}
 
 	/* ====================

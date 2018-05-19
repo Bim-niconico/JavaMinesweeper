@@ -1,13 +1,16 @@
+import java.util.Random;
 import java.util.Scanner;
-import java.io.IOException;
 import java.util.InputMismatchException;
 import java.lang.InterruptedException;
+import java.io.IOException;
 
 public class GameControl {
 	private Scene gameScene;		// 現在のゲームのシーン
 	private Board board;			// 盤面を管理するオブジェクト
 	private Scanner sc;				// 入力用
 	private StageConfig config;		// ステージの構成
+
+	private boolean gameOverFlg;	// ゲームオーバフラグ
 
 	/**
 	 * GameControlクラスのコンストラクタです。
@@ -17,6 +20,7 @@ public class GameControl {
 		gameScene = new Scene();
 		sc = new Scanner(System.in);
 		config = new StageConfig();
+		gameOverFlg = false;
 	}
 
 	/**
@@ -44,8 +48,9 @@ public class GameControl {
 					int width  = stageData[0];
 					int height = stageData[1];
 					int bomb   = stageData[2];
+					int open   = stageData[3];
 					// 選択した難易度によってステージを構築
-					board = new Board(width, height, bomb);
+					board = new Board(width, height, bomb, open);
 
 					return select;
 				} else {
@@ -70,23 +75,40 @@ public class GameControl {
 	 * ゲームのプレイ画面を構築するメソッドです。
 	 * 引数にはプレイヤーが選択した難易度が渡されます。
 	 * @param level プレイヤーが選択した難易度が渡されます。
+	 * @return ゲームオーバでない場合はtrueを返し、ゲームオーバならばfalseを返します。
 	 */
 	public void gamePlay(int level) {
+		Random r = new Random();
 		gameScene.setSceneID(SceneID.PLAY);
 		board.draw();
 
-		String[] commands = inputMessage();
-		String command = commands[0];
-		int x = Integer.parseInt(commands[1]);
-		int y = Integer.parseInt(commands[2]);
+		while (true) {
+			String[] commands = inputMessage();
+			String command = commands[0];
+			int x = Integer.parseInt(commands[1]);
+			int y = Integer.parseInt(commands[2]);
+			
+			if (board.isStageOut(x, y)) continue;
 
-		if (command.length() == 1) {
-			if (command.equals("o")) {			// マスを開く場合
-			} else if (command.equals("f")) {	// 旗を置く場合
-			} else if (command.equals("m")) {	// メニューを開く場合
+			if (command.length() == 1) {
+				if (command.equals("o")) {			// マスを開く場合
+					if (board.put(x, y))  {
+						board.setStageCell(x, y, State.OPEN);
+						if (r.nextInt(100) >= board.getOpenProbability())
+							board.neighborCountBomb(x, y);
+						break;
+					} else {
+						gameOverFlg = true;
+					}
+				} else if (command.equals("f")) {	// 旗を置く場合
+					if (board.checkPutFlag(x, y)) {
+						board.putFlag(x, y);
+						break;
+					}
+				} else if (command.equals("m")) {	// メニューを開く場合
+				}
 			}
 		}
-
 	}
 
 	private String[] inputMessage() {
@@ -114,7 +136,25 @@ public class GameControl {
 
 	public int gameMenu() {
 		int select = 0;
+		gameScene.selectView(Scene.MENU);
+
+		select = sc.nextInt();
+		System.out.print("1-3 >>");
+
+		switch (select) {
+		case 1:
+			board.draw(); break;
+		case 2:
+		}
+
+
 		return select;
 	}
 
+	/* ====================
+	 * 以下、アクセッサ
+	 * ====================*/
+	public boolean getGameOverFlag() {
+		return gameOverFlg;
+	}
 }
